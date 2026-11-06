@@ -1,4 +1,3 @@
-
 Feature: User Registration
 
   Scenario: Successfully register a new customer

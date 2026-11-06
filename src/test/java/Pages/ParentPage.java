@@ -18,14 +18,14 @@ public class ParentPage {
     public WebDriverWait wait = new WebDriverWait(
             GWD.getDriver(), Duration.ofSeconds(20));
 
-    public static WebElement myClick(WebElement element) {
+    public static  WebElement myClick(WebElement element) {
         Hooks.setLastUsedElement(element);
         scrollToElement(element);
         element.click();
         return element;
     }
 
-    public static void mySendKeys(WebElement element, String text) {
+     public static void mySendKeys(WebElement element, String text) {
         Hooks.setLastUsedElement(element);
         scrollToElement(element);
         element.clear();
