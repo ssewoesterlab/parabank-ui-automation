@@ -1,69 +1,71 @@
-
 package Utilities;
 
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.edge.EdgeDriver;
-import org.openqa.selenium.edge.EdgeOptions;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.Locale;
 
 public class GWD {
 
-    private static final ThreadLocal<WebDriver> threadDriver = new ThreadLocal<>();
+    private static final Logger logger = LoggerFactory.getLogger(GWD.class);
+
+    private static WebDriver driver;
+    public static WebDriverWait wait = new WebDriverWait(GWD.getDriver(), Duration.ofSeconds(20));
+
 
     public static WebDriver getDriver() {
-
-        Locale.setDefault(Locale.ENGLISH);
+        Locale.setDefault(new Locale("EN"));
         System.setProperty("user.language", "EN");
 
-        if (threadDriver.get() == null) {
-
-            EdgeOptions edgeOptions = new EdgeOptions();
-
-            edgeOptions.addArguments("--disable-notifications");
-
-            if (isRunningOnJenkins()) {
-                edgeOptions.addArguments(
-                        "--headless=new",
-                        "--no-sandbox",
-                        "--disable-dev-shm-usage",
-                        "--disable-gpu",
-                        "--window-size=1400,2400"
-                );
-            } else {
-                edgeOptions.addArguments("--start-maximized");
+        if (driver == null) {
+            try {
+                logger.info("Yeni WebDriver örneği başlatılıyor: Google Chrome");
+                driver = new ChromeDriver();
+                driver.manage().window().maximize();
+                driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(20));
+                logger.info("WebDriver başarıyla başlatıldı ve yapılandırıldı.");
+            } catch (Exception e) {
+                logger.error("WebDriver başlatılamadı: {}", e.getMessage(), e);
+                throw new RuntimeException("Tarayıcı başlatılamadı.", e);
             }
-
-            threadDriver.set(new EdgeDriver(edgeOptions));
-
-            threadDriver.get().manage().timeouts()
-                    .pageLoadTimeout(Duration.ofSeconds(30));
-
-            threadDriver.get().manage().timeouts()
-                    .implicitlyWait(Duration.ofSeconds(10));
         }
 
-        return threadDriver.get();
+        return driver;
     }
 
-    public static boolean isRunningOnJenkins() {
-        String jenkinsHome = System.getenv("JENKINS_HOME");
-        return jenkinsHome != null && !jenkinsHome.isEmpty();
-    }
 
     public static void quitDriver() {
-
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new RuntimeException(e);
+        if (driver != null) {
+            try {
+                logger.info("WebDriver sonlandırılıyor...");
+                Thread.sleep(5000);
+                driver.quit();
+                driver = null;
+                logger.info("WebDriver başarıyla kapatıldı.");
+            } catch (InterruptedException e) {
+                logger.error("Driver kapatma sırasında thread kesintiye uğradı: {}", e.getMessage(), e);
+                Thread.currentThread().interrupt();
+            } catch (Exception e) {
+                logger.error("WebDriver kapatılırken hata oluştu: {}", e.getMessage(), e);
+            }
+        } else {
+            logger.warn("Kapatılacak bir WebDriver örneği bulunamadı.");
         }
+    }
 
-        if (threadDriver.get() != null) {
-            threadDriver.get().quit();
-            threadDriver.remove();
+
+    public static void KalanOncekileriKapat() {
+        try {
+            logger.info("Önceki ChromeDriver işlemleri sonlandırılıyor...");
+            Runtime.getRuntime().exec("taskkill /F /IM chromedriver.exe /T");
+            logger.info("ChromeDriver işlemleri başarıyla sonlandırıldı.");
+        } catch (Exception e) {
+            logger.error("ChromeDriver işlemleri sonlandırılırken hata oluştu: {}", e.getMessage(), e);
         }
     }
 }

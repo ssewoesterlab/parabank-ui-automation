@@ -1,7 +1,6 @@
 package StepDefinitions;
 
 import Pages.LoginPage;
-import Pages.RegistrationPage;
 import Utilities.ConfigReader;
 import Utilities.GWD;
 import io.cucumber.java.PendingException;
@@ -10,7 +9,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.testng.Assert;
 
-public class LoginSteps {
+public class _LoginSteps_ {
     LoginPage lp = new LoginPage(GWD.getDriver());
 
     @When("the user enters valid login credentials")
@@ -29,4 +28,17 @@ public class LoginSteps {
     public void theUserShouldBeLoggedInSuccessfully() {
         Assert.assertTrue(lp.loginDashboardWelcomeText.isDisplayed());
     }
+
+    @When("the user enters {string} and {string}")
+    public void theUserEntersAnd(String username, String password) {
+        lp.mySendKeys(lp.usernameInputLoginPage, username);
+        lp.mySendKeys(lp.passwordInputLoginPage, password);
+    }
+
+    @Then("the user should see an error message")
+    public void theUserShouldSeeAnErrorMessage() {
+        lp.webElementAssert(lp.errorMessage);
+        Assert.assertTrue(lp.errorMessage.isDisplayed());
+    }
+
 }

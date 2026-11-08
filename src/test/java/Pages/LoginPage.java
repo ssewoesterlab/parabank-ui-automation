@@ -21,9 +21,12 @@ public class LoginPage extends ParentPage{
     @FindBy(xpath = "//input[@value='Log In']")
     public WebElement loginButtonLoginPage;
 
-
     @FindBy(xpath = "//b[text()='Welcome']")
     public WebElement loginDashboardWelcomeText;
+
+    @FindBy(xpath = "//*[@class='error']")
+    public WebElement errorMessage;
+
 
 
 }
