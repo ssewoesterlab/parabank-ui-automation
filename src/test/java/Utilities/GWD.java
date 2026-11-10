@@ -2,10 +2,12 @@ package Utilities;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.openqa.selenium.edge.EdgeDriver;
 
 import java.time.Duration;
 import java.util.Locale;
@@ -25,7 +27,7 @@ public class GWD {
         if (driver == null) {
             try {
                 logger.info("Yeni WebDriver örneği başlatılıyor: Google Chrome");
-                driver = new ChromeDriver();
+                driver = new EdgeDriver();
                 driver.manage().window().maximize();
                 driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(20));
                 logger.info("WebDriver başarıyla başlatıldı ve yapılandırıldı.");

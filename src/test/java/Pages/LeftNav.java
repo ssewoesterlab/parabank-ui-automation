@@ -13,6 +13,9 @@ public class LeftNav extends ParentPage {
     @FindBy(xpath = "//a[text()='Register']")
     public WebElement registerButton;
 
+    @FindBy(xpath = "//a[text()='Bill Pay']")
+    public WebElement billPayButton;
+
 
 
 }
